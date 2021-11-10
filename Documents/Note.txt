@@ -1,0 +1,3 @@
+// Come definire percorsi relativi in .classpath
+
+https://stackoverflow.com/questions/8317957/how-to-instruct-eclipse-to-record-relative-paths-of-the-external-jars
