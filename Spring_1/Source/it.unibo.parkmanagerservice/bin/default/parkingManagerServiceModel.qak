@@ -14,9 +14,8 @@
  *  - The parking manager is already logged in
  */
 
-System parkingmanagerservicesystem
-
-
+System parkingmanagerservice
+ 
 // Context : ctxclientguiparkin
 // Entity (GUI) :  clientguiparkin
 
@@ -196,7 +195,10 @@ QActor clientparkin context ctxclientparkin {
 	Goto waitfromclientguistate
 	//-------------------------------------------------------------------------
 	
+<<<<<<< HEAD
 	
+=======
+>>>>>>> af09b0e18824afe27c3b10302383b32993892f66
 }
 
 QActor statusactor context ctxcommand {
