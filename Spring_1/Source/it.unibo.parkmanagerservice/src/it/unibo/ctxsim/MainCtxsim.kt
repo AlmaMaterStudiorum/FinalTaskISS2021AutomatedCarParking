@@ -6,11 +6,7 @@ import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
 	QakContext.createContexts(
-<<<<<<< HEAD:Spring_1/Source/it.unibo.parkmanagerservice/src/it/unibo/ctxsim/MainCtxsim.kt
-	        "localhost", this, "parkingmanagerservicesystem.pl", "sysRules.pl"
-=======
 	        "localhost", this, "parkingmanagerservice.pl", "sysRules.pl"
->>>>>>> af09b0e18824afe27c3b10302383b32993892f66:Spring_1/Source/it.unibo.parkmanagerservice/src/it/unibo/ctxcarparking/MainCtxcarparking.kt
 	)
 }
 
