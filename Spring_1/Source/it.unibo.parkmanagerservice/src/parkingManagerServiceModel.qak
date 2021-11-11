@@ -19,8 +19,21 @@ System parkingmanagerservicesystem
 
 // Context : ctxclientguiparkin
 // Entity (GUI) :  clientguiparkin
-Request  parkinreq : parkinreq(X)
-Reply    informin    : informin(SLOTNUM)
+
+// clientguiparkin -> clientparkin
+Request  carrequest_ext : carrequest_ext(X)
+
+// clientparkin -> clientguiparkin
+Reply    informin_ext    : informin_ext(SLOTNUM)
+
+
+// clientparkin -> status
+Request  carrequest_in : carrequest_in(X)
+
+// status -> clientparkin
+Reply    informin_in    : informin_in(TOKENID)
+
+
 
 Dispatch carrequest : carrequest(X)
 Dispatch carenter : carenter(X)
@@ -117,7 +130,7 @@ QActor clientparkin context ctxclientparkin {
 	}
 	Transition t0
 	    // Request from ClientGUI 
-		whenMsg carrequest -> carrequeststate
+		whenRequest carrequest_ext -> carrequeststate
 	//-------------------------------------------------------------------------
 	
 	
@@ -126,7 +139,7 @@ QActor clientparkin context ctxclientparkin {
 	State carrequeststate {
 		println("Enter carrequeststate")
 		
-		request statusactor -m parkinreq : parkinreq(X)
+		request statusactor -m carrequest_in : carrequest_in(X)
 	}
 	Goto waitforinforminstate
 	//-------------------------------------------------------------------------
@@ -137,14 +150,14 @@ QActor clientparkin context ctxclientparkin {
 		println("Enter waitforinforminstate")
 	}
 	Transition t0
-		whenReply informin ->  waitforcarenter
+		whenReply informin_in ->  waitforcarenter
 	
 	//-------------------------------------------------------------------------
 	
 	//-------------------------------------------------------------------------
 	State waitforcarenter {
 		println("Enter waitforcarenter")
-        
+        ReplayTo clientguiparkin -m carrequest_in : carrequest_in(X)
 	}
 	Transition t0
 		whenMsg carenter ->  carenterstate
