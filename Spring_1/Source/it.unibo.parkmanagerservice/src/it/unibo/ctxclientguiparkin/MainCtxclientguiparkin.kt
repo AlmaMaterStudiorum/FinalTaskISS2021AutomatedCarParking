@@ -6,7 +6,7 @@ import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
 	QakContext.createContexts(
-	        "localhost\\clientguiparkin", this, "parkingmanagerservicesystem.pl", "sysRules.pl"
+	        "localhost\\clientguiparkin", this, "parkingmanagerservice.pl", "sysRules.pl"
 	)
 }
 

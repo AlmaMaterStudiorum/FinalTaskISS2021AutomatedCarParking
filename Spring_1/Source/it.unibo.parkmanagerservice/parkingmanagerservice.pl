@@ -14,4 +14,8 @@ context(ctxsim, "localhost",  "TCP", "10501").
   qactor( clientguiparkout, ctxclientguiparkout, "external").
   qactor( servergui, ctxservergui, "external").
   qactor( clientparkin, ctxclientparkin, "it.unibo.clientparkin.Clientparkin").
+  qactor( clientparkout, ctxclientparkout, "it.unibo.clientparkout.Clientparkout").
   qactor( statusactor, ctxcommand, "it.unibo.statusactor.Statusactor").
+  qactor( planneractor, ctxcommand, "it.unibo.planneractor.Planneractor").
+  qactor( routeractor, ctxcommand, "it.unibo.routeractor.Routeractor").
+  qactor( driveractor, ctxcommand, "it.unibo.driveractor.Driveractor").
