@@ -161,9 +161,7 @@ QActor clientparkin context ctxclientparkin {
 	Transition t0
 		whenMsg carenter ->  carenterstate
 		
-	//-------------------------------------------------------------------------
-	
-	
+	//-------------------------------------------------------------------------	
 	
 	//-------------------------------------------------------------------------
 	State carenterstate {
@@ -173,8 +171,7 @@ QActor clientparkin context ctxclientparkin {
 	}
 	Goto waitforreceipt
 	//-------------------------------------------------------------------------
-	
-	
+		
 	//-------------------------------------------------------------------------
 	State waitforreceipt {
 		println("Enter waitforreceipt")
@@ -184,8 +181,7 @@ QActor clientparkin context ctxclientparkin {
 		whenReply receipt ->  receiptstate
 		
 	//-------------------------------------------------------------------------
-	
-	
+		
 	//-------------------------------------------------------------------------
 	State receiptstate {
 		println("Enter receiptstate")
@@ -195,10 +191,6 @@ QActor clientparkin context ctxclientparkin {
 	Goto waitfromclientguistate
 	//-------------------------------------------------------------------------
 	
-<<<<<<< HEAD
-	
-=======
->>>>>>> af09b0e18824afe27c3b10302383b32993892f66
 }
 
 QActor statusactor context ctxcommand {

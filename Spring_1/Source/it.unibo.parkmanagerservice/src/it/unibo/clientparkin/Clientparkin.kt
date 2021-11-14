@@ -28,20 +28,12 @@ class Clientparkin ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("Enter waitfromclientguistate")
 					}
-<<<<<<< HEAD
-					 transition(edgeName="t00",targetState="carrequeststate",cond=whenRequest("carrequest_ext"))
-=======
 					 transition(edgeName="t00",targetState="carrequeststate",cond=whenDispatch("carrequest"))
->>>>>>> af09b0e18824afe27c3b10302383b32993892f66
 				}	 
 				state("carrequeststate") { //this:State
 					action { //it:State
 						println("Enter carrequeststate")
-<<<<<<< HEAD
-						request("carrequest_in", "carrequest_in(X)" ,"statusactor" )  
-=======
 						request("parkinreq", "parkinreq(X)" ,"statusactor" )  
->>>>>>> af09b0e18824afe27c3b10302383b32993892f66
 					}
 					 transition( edgeName="goto",targetState="waitforinforminstate", cond=doswitch() )
 				}	 
@@ -49,11 +41,7 @@ class Clientparkin ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("Enter waitforinforminstate")
 					}
-<<<<<<< HEAD
-					 transition(edgeName="t01",targetState="waitforcarenter",cond=whenReply("informin_in"))
-=======
 					 transition(edgeName="t01",targetState="waitforcarenter",cond=whenReply("informin"))
->>>>>>> af09b0e18824afe27c3b10302383b32993892f66
 				}	 
 				state("waitforcarenter") { //this:State
 					action { //it:State
