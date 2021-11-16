@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+	font-size: 93%;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+top {
+	width: 100%;
+}
+
+
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 90%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #abe876;
+    color: #1632cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 90%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+bazul{
+	font-family: "Arial";
+	font-size: 90%;
+	font-weight: bold;
+    color: #007FFF;
+	background-color: #fcf8c7;
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	font-size: 90%;
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	font-size: 90%;
+}
+pre{
+	font-family: "Consolas";
+	font-size: 85%;
+	background-color: #f5f5f5;
+	border: 1.5px solid silver;
+	padding: 5px;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	 
+    font-size: 18px;
+}
+k{
+    color: #990000;
+	font-weight: bold;
+	font-size: 90%;
+}
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+	padding: 10px;
+}
+
+h2 {
+    background-color: #9ed8ff;
+    font-size: 130%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 100%;
+}
+h4 {
+    background-color: #ccffcc;
+    font-size: 100%;
+	width: 95%;
+	border-radius: 5px;
+	padding: 2px;
+}
+h5 {
+    background-color: #d5ffb0;
+    font-size: 100%;
+
+}
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}
+div.remark{
+	background-color: #E3F2FD;
+    border: 1.5px solid #d5f2ed;
+    padding: 15px;
+    margin: 10px;
+	border-radius: 25px;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+ol, ul, li {
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  padding-bottom: 5px;
+}
+
+table, th, td {
+	border: 1px solid black;
+}
+
+img {
+	border: 1.5px solid #d5f2ed
+
+}
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+div.wrapdesc{
+	width: 90%;
+	margin: auto;
+}
+
+div.imagedesc{
+	width: 85%;
+	margin: auto;
+}
+
+.marginauto {
+    margin: 10px auto 20px;
+    display: block;
+}
+
+</style>
+    
+<head>
+   
+<title>Marchesini</title></head>
+    
+<body>
+<div id="top">
+<h1>LABORATORIO DI INGEGNERIA DEI SISTEMI SOFTWARE <font size="5"></font> </h1>
+</div>  
+
+<h2>Problem analysis</h2>
+
+
+In the customer's requirements the map in the html file has one form and in the parkingMap.txt file it has another one, in the following analyzes the one in the file is taken as valid. The map has some ambiguities: for example the positions of the slots are not numbered, and neither are the positions of the loading / unloading areas. The team proposes to change the map symbols like this:
+	<pre>
+X,  X,  X,  X,  X,  X,  X,  X,
+X,  <strong>H</strong>,  0,  0,  0,  0,  <strong>I</strong>,  X,
+X,  0, A1, S1, S4, A3,  0,  X, 
+X,  0, A2, S2, S5, A5,  X,  X, 
+X,  0, A3, S3, S6, A6,  0,  X, 
+X,  0,  0,  0,  0,  0,  <strong>O</strong>,  X, 
+X,  X,  X,  X,  X,  X,  X,  X
+ </pre>
+ <strong>Position : </strong>
+ <ul>
+   <li><strong>H</strong> : Home position of the trolley. Here trolley execute Sleep operation </li>
+   <li><strong>I</strong> : position from which can Upload a car </li>
+   <li><strong>O</strong> : position from which can Download a car </li>
+   <li><strong>An</strong> : front-slot <strong>A</strong>rea from which can Download\Upload a car </li>
+   <li><strong>Sn</strong> : <strong>S</strong> where cars are parked </li>
+ </ul>
+ 
+The trolley stops only in fixed positions, continuous positions between two map coordinates are not possible.
+The trolley can perform the operation (OP) of walk (W), turn left (L), turn right (R), sleep (S), load (U) and unload (D).
+These characters (W, L, R, U, D, S) are part of the ROUTEHI alphabet, while the lower case version of the ROUTELO alphabet (see: Logic Architecture).
+In order to identify each position, through coordinates (x, y), of the map without ambiguity, new concepts are introduced:
+<p/>
+ All positions are divided into:
+ <ul>
+<li><strong>ReachablePoint</strong></li>
+The trolley can enter these positions.
+The accessible positions are those with the symbols H, 0, An, I and O.
+These positions are divided into:
+<ul>
+<li><strong>KeyPoint</strong></li>
+In these positions the trolley can be stopped to carry out the
+loading / unloading operations or Sleep in the case of H (Home).
+<p/>
+These positions are divided into:
+<ul>
+<li><strong>End-point</strong></li>
+In these positions the trolley could receive a new Plan.
+In the positions of An it can carry out loading and unloading operations. (FRONT-SLOT)
+In the H position it can perform the sleep operation.
+In the O position it can perform the unloading operation.
+<ul>
+<li><strong>Avaliable-Point</strong></li>
+In these positions the trolley receives a new Plan after the unloading or sleep operations or in other words is becames "Avaliable" after the D or S operation.<br>
+In the An positions after the unloading operation, the trolley receives a new Plan .<br>
+In the O position, after the unloading operation, the trolley receives a new Plan.<br>
+In the position of H after the sleep operation it receives a new plan if it exists otherwise it remains in this position until a new Plan is received.<br>
+</ul>
+<li><strong>No-End-Point</strong></li>
+The only position is I and in this position the trolley cannot receive a new Plan.<br>
+In the I position it can perform the loading operation.<br>
+</ul>
+<li><strong>OnlyMovePoint</strong></li>
+In these positions the trolley does not carry out operations of any kind, it can only transit.<br>
+</ul>
+<li><strong>UnReachablePoint</strong></li>
+The inaccessible positions are those are marked with X and Sn.<br>
+</ul>
+</ul>
+
+
+
+<p>
+The system requires a research phase to determine the execution times of the operations like w.
+At the end of this phase, it may be necessary to introduce a trolley calibration every time it reaches the corner positions such as I, O and H.
+This calibration will exploit the object-detection functions of the virtual environment , due to this update logical architecture will be upgraded.
+<p>
+<h4>Table of SubPlan</h4>
+<img src="img\SubPlan.png" class="marginauto" alt="SubPlan" style='height: 75%; width: 75%; object-fit: contain' align="middle">
+<p>
+The SubPlan table defines the path of the trolley from a <strong>KeyPoint</strong> from to another <strong>KeyPoint</strong> to and the operation to be performed upon reaching the target KeyPoint and the name of the task.
+The consideration that can be made is that the tasks moveToIn, moveToSlotIn, backToHome, moveToHome, moveToSlotOut, moveToOut can be considered as Subplans.
+To complete a customer request, for example a pick up 2 Subplans are required.
+This sequence is called Plan, this implies that a Plan always starts from one <strong>Avaliable-Point</strong> and ends at another <strong>Avaliable-Point</strong>.
+The next table defines all possible Tasks.
+<p>
+
+<p>
+<h4>Table of SubPlan</h4>
+<p>
+<img src="img\Tasks.drawio.png" class="marginauto" alt="Tasks" style='height: 50%; width: 50%; object-fit: contain' align="middle">
+<p>
+As already indicated in the requirements analysis (if SLOTNUM == 0 -> moveToHome), the existence of a requirement in contradiction with the condition that it is not possible to invoke a task that brings the trolley back to Home from any position, and whether or not it has the load, it leads at this point in the problem analysis to ignore this requirement.
+<p>
+
+<p>
+<h4>Logic Architecture</h4>
+<p>
+<h5>Logic Architecture Main</h5>
+<img src="img\LogicalArchitecture.Main.V2.drawio.png" class="marginauto" alt="LogicalArchitecture" style='height: 75%; width: 75%; object-fit: contain' align="middle">
+<p>
+<h5>Logic Architecture Details</h5>
+<img src="img\LogicalArchiteture.Details.drawio.png" class="marginauto" alt="LogicalArchitecture" style='height: 75%; width: 75%; object-fit: contain' align="middle">
+<p>
+The Status actor contains the state of the system. It implements the logic of the acceptIN, informIN, moveToIn, moveToSlotIn, backToHome, moveToHome, acceptOut, findSlot, moveToSlotOut, moveToOut and the mock-object monitor.<br>
+It is the only actor who maintains the internal state of the system, all the others are stateless.<br>
+Status sends a message to Planner the message READY.<br>
+Status contains a ParkInQueue for managing cars in the parking phase, a SlotList for parked cars, and a ParkOutQueue for cars in the collection phase.<br>
+Status write a log file for every state change : tasks ,message, sensor , operation , position , queue, list.<br>
+<p>
+After receiving the READY, the Planner actor creates the PlanString (see: Plan table Plan column) to be sent to Route.<br>
+<p>
+The Route actor sends the high-level route (ROUTEHI), a sequence of characters to control the trolley [W, R, L, U, D, S], to the Driver actor.<br>
+<p>
+The Driver actor translates the ROUTEHI into the low-level route (ROUTELO) composed of a sequence of w, r, l, u, d, s followed by the execution time.<br> 
+The Driver actor sends the pair r: routetime to Sim at a time with a routetime delay between one sending and the next. Sending can be suspended / resumed by a SIM message.<br>
+<p>
+The Sim actor contains the mock-objects of: smartthermometer (thermometer + alarm), fan, weigthsensor, outsonar, manager.<br>
+Smartthermometer: mock-object that sends a message only when Ta&gt; TMax or Ta &lt;TMax to Status. Includes modeling of the thermometer and alarm management.<br>
+All mock-object send messages only on change status.<br>
+All mock-objects of the actor Sim send a message to Status.<br>
+The Sim actor commands WEnv with cril language(see : <a href="img\VR2021.pdf" target="code">VR2021.pdf</a> )
+<p>
+The Sim GUI is dedicated to modifying the system state (fan, thermometer, outsensor, weightsensor) and running tests.<br>
+<p>
+ServerGUI is enabled only after insert proper permission.
+<p>
+<h4>Table of Plans</h4>
+<p>
+<img src="img\PlanTable.png" class="marginauto" alt="PlanTable" style='height: 50%; width: 50%; object-fit: contain' align="middle">
+<p>
+The Plan table identifies under which conditions the Status actor sends the READY command to the Planner actor.<br>
+The 4 columns on the right , SlotFree and Position are the variables that identify the name of the Plan (PlanString) that Planner sends to the Router and the corresponding tasks that are performed.<br>
+This table has a 1: 1 correspondence with the TestsOfThePlans group of the Test Plan.<br>
+Tasks in blue are named MovingTask (see:Test Plan).<br>
+<p>
+<h4>Model</h4>
+<p>
+First ,and incomplete, version of model is defined in a qak file (see : <a href="..\Source\it.unibo.parkmanagerservice\src\parkingManagerServiceModel.qak" target="code">parkingManagerServiceModel.qak</a> )
+<p>
+
+<p>
+<h4>Test Plan</h4>
+<p>
+
+
+The Test Plan contains 2 tests for the execution of the main functions of the application. <br>
+The ParkIn phase and the ParkOut phase. <br>
+In both cases the trolley starts from the Home position and goes to the Home position. <br>
+The tests are carried out by some actors, respectively clientparkintest and clientparkouttest (see : <a href="..\Source\it.unibo.parkmanagerservice\src\parkingManagerServiceModel.qak" target="code">parkingManagerServiceModel.qak</a> ). <br>
+<p>
+<strong>ParkIn Phase</strong> <br>
+Initial conditions: weightsensor = off, all slot free. <br>
+The tasks of acceptIN, informIN, moveToIn, receipt, moveToSlotIn, backToHome are performed. <br>
+Success conditions at the end of the test: the TOKENID is generated, slot 1 is occupied, the trolley is in the HOME position. <br>
+<p>
+<strong>ParkOut Phase</strong> <br>
+Initial conditions: weightsensor = off, slot 1 occupied. <br>
+The acceptOUT, findSlot, moveToSlotOut, moveToOut, moveToHome task is executed. <br>
+Success conditions at the end of the test: all slots are free, the sonar has detected a presence and before DTFREE detects the absence of the car, the trolley is in the HOME position. <br>
+   
+<br/><br/> 	
+</div>  
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:left;color:white">
+mail : ugo.marchesini@studio.unibo.it  
+</div> 
+</body>
+</html>
