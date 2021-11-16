@@ -22,18 +22,17 @@ class Clientparkout ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						println("Enter initState")
 					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+					 transition( edgeName="goto",targetState="waitforpickup_ext", cond=doswitch() )
 				}	 
-				state("wait") { //this:State
+				state("waitforpickup_ext") { //this:State
 					action { //it:State
 						println("Enter wait")
 					}
-					 transition(edgeName="t06",targetState="send_pickup_int_state",cond=whenRequest("pickup_ext"))
-					transition(edgeName="t07",targetState="send_pickupok_ext_state",cond=whenReply("pickupok_int"))
+					 transition(edgeName="t06",targetState="waitforpickup_int_state",cond=whenRequest("pickup_ext"))
 				}	 
-				state("send_pickup_int_state") { //this:State
+				state("waitforpickup_int_state") { //this:State
 					action { //it:State
-						println("Enter send_pickup_int_state")
+						println("Enter waitforpickup_int_state")
 						if( checkMsgContent( Term.createTerm("pickup_ext(TOKENID)"), Term.createTerm("pickup_ext(TOKENID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
@@ -42,14 +41,14 @@ class Clientparkout ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						}
 						request("pickup_int", "TOKENID" ,"statusactor" )  
 					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+					 transition(edgeName="t07",targetState="complete_state",cond=whenReply("pickupok_int"))
 				}	 
-				state("send_pickupok_ext_state") { //this:State
+				state("complete_state") { //this:State
 					action { //it:State
 						println("Enter send_pickupok_ext_state")
 						answer("pickup_ext", "pickupok_ext", "X"   )  
 					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+					 transition( edgeName="goto",targetState="waitforpickup_ext", cond=doswitch() )
 				}	 
 			}
 		}

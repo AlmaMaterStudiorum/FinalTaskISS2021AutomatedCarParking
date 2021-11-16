@@ -24,58 +24,40 @@ class Clientparkin ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("Enter initstate")
 					}
-					 transition( edgeName="goto",targetState="waitfromcarrequest", cond=doswitch() )
+					 transition( edgeName="goto",targetState="waitfromcarrequest_ext_state", cond=doswitch() )
 				}	 
-				state("waitfromcarrequest") { //this:State
+				state("waitfromcarrequest_ext_state") { //this:State
 					action { //it:State
-						println("Enter waitfromcarrequest")
+						println("Enter waitfromcarrequest_ext_state")
 					}
-					 transition(edgeName="t00",targetState="send_carrequest_int_state",cond=whenRequest("carrequest_ext"))
-				}	 
-				state("send_carrequest_int_state") { //this:State
-					action { //it:State
-						println("Enter send_carrequest_in_state")
-						request("carrequest_int", "carrequest_int(X)" ,"statusactor" )  
-					}
-					 transition( edgeName="goto",targetState="waitforinform_int_state", cond=doswitch() )
+					 transition(edgeName="t00",targetState="waitforinform_int_state",cond=whenRequest("carrequest_ext"))
 				}	 
 				state("waitforinform_int_state") { //this:State
 					action { //it:State
-						println("Enter waitforinform_in_state")
+						println("Enter waitforinform_int_state")
+						request("carrequest_int", "carrequest_int(X)" ,"statusactor" )  
 					}
-					 transition(edgeName="t01",targetState="send_informin_ext_state",cond=whenReply("informin_int"))
+					 transition(edgeName="t01",targetState="waitforinform_int_state",cond=whenReply("informin_int"))
 				}	 
-				state("send_informin_ext_state") { //this:State
+				state("watiforcarenter_ext_state") { //this:State
 					action { //it:State
-						println("Enter send_informin_ext_state")
+						println("Enter watiforcarenter_ext_state")
 						if( checkMsgContent( Term.createTerm("informin_int(SLOTNUM)"), Term.createTerm("informin_int(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 SLOTNUM = payloadArg(0).toInt()  
 						}
 						answer("carrequest_ext", "informin_ext", "SLOTNUM"   )  
 					}
-					 transition(edgeName="t02",targetState="watiforcarenterstate",cond=whenDispatch("carenter"))
-				}	 
-				state("watiforcarenterstate") { //this:State
-					action { //it:State
-						println("Enter watiforcarenterstate")
-					}
-					 transition(edgeName="t03",targetState="send_carenter_int_state",cond=whenRequest("carenter_ext"))
-				}	 
-				state("send_carenter_int_state") { //this:State
-					action { //it:State
-						println("Enter send_carenter_itn_state")
-						request("carenter_int", "carenter_int(X)" ,"statusactor" )  
-					}
-					 transition( edgeName="goto",targetState="waitforreceipt_int_state", cond=doswitch() )
+					 transition(edgeName="t02",targetState="waitforreceipt_int_state",cond=whenRequest("carenter_ext"))
 				}	 
 				state("waitforreceipt_int_state") { //this:State
 					action { //it:State
-						println("Enter waitforreceipt_in_state")
+						println("Enter waitforreceipt_int_state")
+						request("carenter_int", "carenter_int(X)" ,"statusactor" )  
 					}
-					 transition(edgeName="t04",targetState="send_carenter_ext_state",cond=whenReply("receipt_int"))
+					 transition(edgeName="t03",targetState="complete_state",cond=whenReply("receipt_int"))
 				}	 
-				state("send_carenter_ext_state") { //this:State
+				state("complete_state") { //this:State
 					action { //it:State
 						println("Enter send_carenter_ext_state")
 						if( checkMsgContent( Term.createTerm("receipt_int(TOKENID)"), Term.createTerm("receipt_int(X)"), 
@@ -84,7 +66,7 @@ class Clientparkin ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						}
 						answer("carenter_ext", "receipt_ext", "TOKENID"   )  
 					}
-					 transition(edgeName="t05",targetState="watiforcarenterstate",cond=whenDispatch("carenter"))
+					 transition( edgeName="goto",targetState="waitfromcarrequest_ext_state", cond=doswitch() )
 				}	 
 			}
 		}

@@ -6,6 +6,7 @@
 
 System parkingmanagerservice
  
+ 
 // Context : ctxclientguiparkin
 // Entity (GUI) :  clientguiparkin
 
@@ -37,7 +38,9 @@ Request  carenter_int : carenter_int(X)
 Reply    receipt_int    : receipt_int(TOKENID)
 
 
+// Entity (GUI) :  clientguiparkout
 
+// Context : ctxclientguiparkout
 // clientguiparkout -> clientparkout
 Request  pickup_ext : pickup_ext(TOKENID)
 
@@ -51,63 +54,34 @@ Request  pickup_int : pickup_int(TOKENID)
 Reply    pickupok_int    : pickupok_int(X)
 
 
+Dispatch start : start(DEVICE) // DEVICE : Trolley,Fan,Alarm 
+Dispatch stop : stop(DEVICE)   // DEVICE : Trolley,Fan,Alarm
+Dispatch simready : simready(PDO,SDO,TDO)   // PDO : current_Position-Direction-Operation
+											// SDO : Source_position-Direction-Operation
+											// TDO : Target_Position-Direction-Operation
+Dispatch move: move(PDO)
+Dispatch slotstatus : slotstatus(SLOTS)
+
+Dispatch info : info(CONTENT) // Ex: simactor send statusactor a message that outdoor area is free/occupated
+
+Request ready : ready(PDO,SDO,TDO)
+Reply   akn_ready    : akn_ready(X)
+
+Request plan : plan(PLANSTRING)
+Reply   akn_plan    : akn_plan(X)
+
+Request route : route(ROUTESTRING)
+Reply   akn_route    : akn_route(X)
+
+Request dmove : dmove(PDO)
+Reply   akn_dmove    : akn_dmove(X)
+
+Dispatch simaction : simaction(PDO,SDO,TDO)
+
+//Dispatch simresult : simresult(SIMRESULTCONTENT)
 
 
-Dispatch carrequest : carrequest(X)
-Dispatch carenter : carenter(X)
-
-Dispatch carrequestresponse : carrequestresponse(X)
-Dispatch carenterresponse : carenterresponse(X)
-
-Request  carenterreq : carenterreq(SLOTNUM)
-Reply    receipt    : receipt(TOKENID)
-
-
-// Context : ctxclientguiparkout
-// Entity (GUI):  clientguiparkout
-Request pickup : pickup(TOKENID)
-Reply   pickupok    : pickupok(SLOTNUM)
-
-
-// Context : ctxcommand
-// Actor :  statusActor
-Request ready : ready(P,D)
-Reply   aknready    : aknready(AKN)
-
-// Actor :  plannerActor
-Request plan : plan(PLAN)
-Reply   aknplan    : aknplan(AKN)
-
-// Actor :  routeActor
-Request route : route(ROUTE)
-Reply   aknroute    : aknroute(AKN)
-
-// Actor :  driverActor
-Request op : op(OP)
-Reply   aknop    : aknop(AKN)
-
-// Context : ctxservergui
-// Entity (GUI):  ctxservergui
-Request commandToSim : commandToSim(X)
-Reply   akncommandToSim    : akncommandToSim(AKN)
-
-// Context : ctxsim
-// Actor   : simactor
-Request simtostatus : simtostatus(X)
-Reply   aknsimtostatus    : aknsimtostatus(AKN)
-
-Request simtodriver : simtodriver(X)
-Reply   aknsimtodriver    : aknsimtodriver(AKN)
-
-Dispatch simtowenv : simtowenv(X)
-
-// Context : ctxsimgui
-// Entity (GUI):  simgui
-Request simaction : simaction(X)
-Reply   aknsimaction    : aknsimaction(AKN)
-
-
-
+// Context
 Context ctxclientguiparkin ip[host="localhost\\\\clientguiparkin" port=10100]
 Context ctxclientguiparkout ip[host="localhost\\\\ctxclientguiparkout" port=10200]
 
@@ -122,11 +96,14 @@ Context ctxserver ip[host="localhost" port=10401]
 Context ctxsimgui ip[host="localhost" port=10500]
 Context ctxsim ip[host="localhost" port=10501]
 
+Context ctxwenv ip[host="localhost" port=10600]
 
 
+// Context
 ExternalQActor clientguiparkin context ctxclientguiparkin 
 ExternalQActor clientguiparkout context ctxclientguiparkout 
 ExternalQActor servergui context ctxservergui 
+ExternalQActor wenvgui context ctxwenv 
 
 
 QActor clientparkin context ctxclientparkin {
@@ -139,82 +116,56 @@ QActor clientparkin context ctxclientparkin {
 		println("Enter initstate")
 
 	}
-	Goto waitfromcarrequest
+	Goto waitfromcarrequest_ext_state
 	//-------------------------------------------------------------------------
 		
 	//-------------------------------------------------------------------------
-	State waitfromcarrequest {
-		println("Enter waitfromcarrequest")
+	State waitfromcarrequest_ext_state {
+		println("Enter waitfromcarrequest_ext_state")
 		
 	}
 	Transition t0
 	    // Request from ClientGUI 
-		whenRequest carrequest_ext -> send_carrequest_int_state
-	//-------------------------------------------------------------------------
-		
-	//-------------------------------------------------------------------------
-	State send_carrequest_int_state {
-		println("Enter send_carrequest_in_state")
-		
-		request statusactor -m carrequest_int : carrequest_int(X)
-	}
-	Goto waitforinform_int_state
+		whenRequest carrequest_ext -> waitforinform_int_state
 	//-------------------------------------------------------------------------
 		
 	//-------------------------------------------------------------------------
 	State waitforinform_int_state {
-		println("Enter waitforinform_in_state")
+		println("Enter waitforinform_int_state")
+		
+		request statusactor -m carrequest_int : carrequest_int(X)
 	}
 	Transition t0
-		whenReply informin_int ->  send_informin_ext_state
-	
+		whenReply informin_int ->  waitforinform_int_state
 	//-------------------------------------------------------------------------
-	
+		
 	//-------------------------------------------------------------------------
-	State send_informin_ext_state {
-		println("Enter send_informin_ext_state")
+	State watiforcarenter_ext_state {
+		println("Enter watiforcarenter_ext_state")
 		onMsg(informin_int : informin_int(X))
 		{   
 			[# SLOTNUM = payloadArg(0).toInt() #]			
 		}
-		
-        replyTo carrequest_ext with informin_ext:SLOTNUM
+		replyTo carrequest_ext with informin_ext:SLOTNUM
 	}
 	Transition t0
-		whenMsg carenter ->  watiforcarenterstate
-		
+		whenRequest carenter_ext -> waitforreceipt_int_state
+	
 	//-------------------------------------------------------------------------
-		
-	//-------------------------------------------------------------------------
-	State watiforcarenterstate {
-		println("Enter watiforcarenterstate")
-		
-		
-	}
-	Transition t0
-		whenRequest carenter_ext -> send_carenter_int_state
-	//-------------------------------------------------------------------------
-		
-	//-------------------------------------------------------------------------
-	State send_carenter_int_state {
-		println("Enter send_carenter_itn_state")
-		
-		request statusactor -m carenter_int : carenter_int(X)
-	}
-	Goto waitforreceipt_int_state
-	//-------------------------------------------------------------------------
-		
+	
 	//-------------------------------------------------------------------------
 	State waitforreceipt_int_state {
-		println("Enter waitforreceipt_in_state")
+		println("Enter waitforreceipt_int_state")
+		
+       request statusactor -m carenter_int : carenter_int(X)
 	}
 	Transition t0
-		whenReply receipt_int ->  send_carenter_ext_state
+		whenReply receipt_int ->  complete_state
 	
 	//-------------------------------------------------------------------------
 	
 	//-------------------------------------------------------------------------
-	State send_carenter_ext_state {
+	State complete_state {
 		println("Enter send_carenter_ext_state")
 		onMsg(receipt_int : receipt_int(X))
 		{   
@@ -223,15 +174,63 @@ QActor clientparkin context ctxclientparkin {
 		
         replyTo carenter_ext with receipt_ext:TOKENID
 	}
-	Transition t0
-		whenMsg carenter ->  watiforcarenterstate
-		
+	Goto waitfromcarrequest_ext_state
 	//-------------------------------------------------------------------------
 	
-
+	
 }
 
+QActor clientparkintest context ctxclientparkin {
+	[#  var SLOTNUM = 0 
+		var TOKENID = ""
+		
+	#]
+	//-------------------------------------------------------------------------
+	State initstate initial {
+		println("Enter initstate")
 
+	}
+	Goto waitforinform_ext_state
+	//-------------------------------------------------------------------------
+		
+	//-------------------------------------------------------------------------
+	State waitforinform_ext_state {
+		println("Enter waitfromcarrequest_ext_state")
+		
+		request clientparkin -m carrequest_ext:X
+	}
+	Transition t0
+	    // Request from ClientGUI 
+		whenReply informin_ext ->  waitforreceipt_ext_state
+	//-------------------------------------------------------------------------
+		
+	//-------------------------------------------------------------------------
+	State waitforreceipt_ext_state {
+		println("Enter waitforinform_ext_state")
+		
+		onMsg(informin_ext : informin_ext(SLOTNUM))
+		{   
+			[# SLOTNUM = payloadArg(0).toInt() #]			
+		}
+		
+		request clientparkin -m carenter_ext:X
+	}
+	Transition t0
+		whenReply receipt_ext ->  waitfor_download
+	//-------------------------------------------------------------------------
+		
+	//-------------------------------------------------------------------------
+	State waitfor_download {
+		println("Enter watiforcarenter_ext_state")
+		onMsg(informin_int : informin_int(TOKENID))
+		{   
+			[# TOKENID = payloadArg(0) #]			
+		}
+		// TBD event???
+		
+	}
+		
+}
 
 
 QActor clientparkout context ctxclientparkout {
@@ -240,19 +239,18 @@ QActor clientparkout context ctxclientparkout {
 		println("Enter initState")
 
 	}
-	Goto wait
+	Goto waitforpickup_ext
 
-	State wait{
+	State waitforpickup_ext{
 		println("Enter wait")
 
 	}
 	Transition t0 
-		whenRequest pickup_ext -> send_pickup_int_state
-		whenReply pickupok_int -> send_pickupok_ext_state
+		whenRequest pickup_ext -> waitforpickup_int_state
 		
-		
-	State send_pickup_int_state{
-		println("Enter send_pickup_int_state")
+				
+	State waitforpickup_int_state{
+		println("Enter waitforpickup_int_state")
 		onMsg(pickup_ext:pickup_ext(TOKENID))
 		{
 			[#
@@ -262,14 +260,39 @@ QActor clientparkout context ctxclientparkout {
 		}
 		request  statusactor -m pickup_int:TOKENID
 	}
-	Goto wait
+	Transition t0 
+		whenReply pickupok_int -> complete_state
 	
 	
-	State send_pickupok_ext_state{
+	State complete_state{
 		println("Enter send_pickupok_ext_state")
 		replyTo pickup_ext with pickupok_ext:X
 	}
-	Goto wait
+	Goto waitforpickup_ext
+			
+}
+
+QActor clientparkouttest context ctxclientparkout {
+	[# var TOKENID = "" #]
+	State initState initial {
+		println("Enter initState")
+
+	}
+	Goto waitforpickupok_ext
+
+	State waitforpickupok_ext{
+		println("Enter wait")
+		request  clientparkout -m pickup_ext:TOKENID
+	}
+	Transition t0 
+		whenReply pickupok_ext -> waitfor_upload
+		
+				
+	State waitfor_upload{
+		println("Enter waitfor_upload")
+		// TBD event???
+
+	}
 			
 }
 
@@ -280,9 +303,11 @@ QActor statusactor context ctxcommand {
 		var SlotFreeList = mutableListOf("zero","free", "free", "free", "free", "free", "free")
 		var IndoorArea = "OFF"
 		var SequenceNumber = 0
-		val ParkInQueue: Queue<String> = LinkedList<String>()
-        val ParkOutQueue: Queue<Person> = LinkedList<Person>()
-		
+		val ParkInQueue: java.util.Queue<String> = java.util.LinkedList<String>()
+        val ParkOutQueue: java.util.Queue<String> = java.util.LinkedList<String>() 
+        var Fan = "OFF"
+        var Alarm = "OFF"
+        var Trolley = "idle" // idle,working,stopped		
 	#]
 	
 	State initState initial {
@@ -291,21 +316,30 @@ QActor statusactor context ctxcommand {
 	}
 	Goto wait
 	
-	State wait{
-		
+	State wait
+	{
+		println("Enter wait")	
 	}
 	Transition t0
 		whenRequest carrequest_int -> carrequest_int_state
 		whenRequest carenter_int -> carenter_int_state
 		whenRequest pickup_int -> pickup_int_state
+		whenMsg start -> start_state
+		whenMsg stop -> stop_state
+		whenMsg simready -> simready_state
+		whenMsg move -> move_state
+		whenReply akn_ready -> manage_akn_ready_state
 	
 	
 	State carrequest_int_state
 	{
+		println("Enter carrequest_int_state")
 		[#
 			var SLOTNUM = 0
-			if (IndoorArea == "OFF")
-				SLOTNUM =  SlotFreeList.indexOfFirst{ it == "free"}
+			if (IndoorArea === "OFF")
+			    // if no slot are free SLOTNUM = -1
+			    // SLOTNUM = 0 is impossibile
+ 				SLOTNUM =  SlotFreeList.indexOfFirst{ it == "free"}
 			else
 				SLOTNUM = -2
 		#]
@@ -315,29 +349,33 @@ QActor statusactor context ctxcommand {
 	
 	State carenter_int_state
 	{
+		println("Enter carenter_int_state")
 		onMsg(carenter_int : carenter_int(SLOTNUM))
 		{			
 			[#
-				var SLOTNUM = = payloadArg(0)
+				var SLOTNUM = payloadArg(0).toInt()
 				SequenceNumber++
 				var TOKENID = "$SequenceNumber-$SLOTNUM"
 				SlotFreeList[SLOTNUM] = "movingIn"
 				ParkInQueue.add(TOKENID)			
-				// Check is PLAN is ready : only if trolley in HOME
+				IndoorArea = "ON"
+				// Check if PLAN is ready : for ex if trolley in HOME
 					
 			#]
 		}
 		
-		replyTo carenter_int with receipt_int:$TOKENID
+		replyTo carenter_int with receipt_int:TOKENID
 	}
 	Goto wait	
-	
+		
 	State pickup_int_state
 	{
+		println("Enter pickup_int_state")
 		onMsg(pickup_int : pickup_int(TOKENID))
 		{			
 			[#
-				var index =  SlotFreeList.indexOfFirst{ it == $TOKENID}
+				var TOKENID = payloadArg(0)
+				var index =  SlotFreeList.indexOfFirst{ it == TOKENID}
 				if (index > 0) 
 				{
 					ParkOutQueue.add(TOKENID)
@@ -346,14 +384,84 @@ QActor statusactor context ctxcommand {
 				{
 					//
 				}
-				// Check is PLAN is ready : only if trolley in HOME			
+				// Check if PLAN is ready : for ex if trolley in HOME			
 			#]
 		}
 		
-		replyTo carenter_int with receipt_int:$TOKENID
+		replyTo carenter_int with receipt_int:TOKENID
 	}
 	Goto wait	
+			
+	State start_state
+	{
+		println("Enter start_state")
+		onMsg(start : start(DEVICE))
+		{			
+			[#
+				val Action = "ON"
+				var DEVICE = payloadArg(0)
+				when(DEVICE)
+				{
+					"F" -> Fan = Action
+					"A" -> Alarm = Action
+					"T" -> Trolley = Action		
+				}			
+			#]
+		}
+		forward servergui -m start:DEVICE
 		
+	}	
+	Goto wait	
+	
+	State stop_state
+	{
+		println("Enter stop_state")
+		onMsg(start : start(DEVICE))
+		{			
+			[#
+				val Action = "OFF"
+				var DEVICE = payloadArg(0)
+				when(DEVICE)
+				{
+					"F" -> Fan = Action
+					"A" -> Alarm = Action
+					"T" -> Trolley = Action		
+				}				
+			#]
+		}
+		forward servergui -m start:DEVICE
+	}	
+	Goto wait	
+	
+	State simready_state
+	{
+		println("Enter simready_state")
+		onMsg(simready : simready(PDO,SDO,TDO))
+		{			
+			[#
+				// reset inner variable e send ready to planner				
+			#]
+		}
+		//forward planneractor -m ready:DEVICE
+	}	
+	Goto wait	
+	
+	State move_state
+	{
+		println("Enter move_state")
+		// Manage avaliable state
+		// TBD
+		
+	}	
+	Goto wait	
+	
+	State manage_akn_ready_state
+	{
+		println("Enter manage_akn_ready_state")
+	}	
+	Goto wait
+	
+
 		
 }
 
@@ -362,9 +470,35 @@ QActor planneractor context ctxcommand {
 		println("Enter initState")
 
 	}
+	Goto wait
+	
+	State wait
+	{
+		println("Enter wait")
+	}
+	Transition t0
+		whenRequest ready -> manage_state
+		
+	State manage_state
+	{
+		println("Enter manage_state")
+		[#
+		   var PLAN	= "O,An,U,O,D"
+			
+		#]
+					
+		request routeractor -m route:PLAN
+	}	
+	Transition t0
+		whenReply akn_ready -> manage_akn_state
+	
+	State manage_akn_state
+	{
+		println("Enter manage_akn_state")
+	}	
+	Goto wait
+	
 }
-
-
 
 
 QActor routeractor context ctxcommand {
@@ -372,13 +506,126 @@ QActor routeractor context ctxcommand {
 		println("Enter initState")
 
 	}
+	Goto wait
+		
+	State wait
+	{
+		println("Enter wait")
+	}
+	Transition t0
+		whenRequest plan -> manage_state
+		
+	State manage_state
+	{
+		println("Enter manage_state")
+		[#
+		   var ROUTE = ""	
+			
+		#]
+					
+		request driveractor -m route:ROUTE
+	}	
+	Transition t0
+		whenReply akn_route -> manage_akn_state
+	
+	State manage_akn_state
+	{
+		println("Enter manage_akn_state")
+	}	
+	Goto wait
 }
 
 QActor driveractor context ctxcommand {
+
 	State initState initial {
 		println("Enter initState")
 
 	}
+	Goto wait
+		
+	State wait
+	{
+		println("Enter wait")
+	}
+	Transition t0
+		whenRequest ready -> manage_state
+		
+	State manage_state
+	{
+		println("Enter manage_state")
+		[#
+		   var PDO = "0,0,S,N"
+			
+		#]
+					
+		request simactor -m dmove:PDO
+	}	
+	Transition t0
+		whenReply akn_dmove -> manage_akn_state
+	
+	State manage_akn_state
+	{
+		println("Enter manage_akn_state")
+	}	
+	Goto wait
+	
 }
+
+QActor simactor context ctxsim {
+	State initState initial {
+		println("Enter initState")
+
+	}
+	Goto wait
+	
+	State wait
+	{
+		
+	}
+	Transition t0
+		whenMsg start -> manage_start
+		whenMsg stop -> manage_stop
+		whenMsg simaction -> manage_simaction
+		whenRequest dmove -> dmove_state
+	
+	State manage_start
+	{
+		onMsg(start : start(DEVICE))
+		{			
+			forward statusactor -m start:DEVICE
+		}
+	}
+	Goto wait
+	
+	State manage_stop
+	{
+		onMsg(stop : stop(DEVICE))
+		{			
+			forward statusactor -m stop:DEVICE
+		}
+	}
+	Goto wait
+	
+	State manage_simaction
+	{
+		onMsg(simready : simready(PDO,SDO,TPO))
+		{			
+			forward statusactor -m simready:simready(PDO,SDO,TPO)
+		}
+	}
+	Goto wait
+	
+	State dmove_state
+	{
+		onMsg(dmove : dmove(PDO))
+		{			
+			forward statusactor -m move:PDO
+			replyTo dmove with akn_dmove:X
+		}
+	}
+	Goto wait
+	
+}
+
 
  

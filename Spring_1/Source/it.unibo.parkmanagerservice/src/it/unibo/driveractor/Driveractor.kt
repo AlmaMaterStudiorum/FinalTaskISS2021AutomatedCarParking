@@ -21,6 +21,29 @@ class Driveractor ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 					action { //it:State
 						println("Enter initState")
 					}
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+				}	 
+				state("wait") { //this:State
+					action { //it:State
+						println("Enter wait")
+					}
+					 transition(edgeName="t021",targetState="manage_state",cond=whenRequest("ready"))
+				}	 
+				state("manage_state") { //this:State
+					action { //it:State
+						println("Enter manage_state")
+						
+								   var PDO = "0,0,S,N"
+									
+						request("dmove", "PDO" ,"simactor" )  
+					}
+					 transition(edgeName="t022",targetState="manage_akn_state",cond=whenReply("akn_dmove"))
+				}	 
+				state("manage_akn_state") { //this:State
+					action { //it:State
+						println("Enter manage_akn_state")
+					}
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}
 		}

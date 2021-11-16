@@ -21,6 +21,29 @@ class Planneractor ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("Enter initState")
 					}
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+				}	 
+				state("wait") { //this:State
+					action { //it:State
+						println("Enter wait")
+					}
+					 transition(edgeName="t017",targetState="manage_state",cond=whenRequest("ready"))
+				}	 
+				state("manage_state") { //this:State
+					action { //it:State
+						println("Enter manage_state")
+						
+								   var PLAN	= "O,An,U,O,D"
+									
+						request("route", "PLAN" ,"routeractor" )  
+					}
+					 transition(edgeName="t018",targetState="manage_akn_state",cond=whenReply("akn_ready"))
+				}	 
+				state("manage_akn_state") { //this:State
+					action { //it:State
+						println("Enter manage_akn_state")
+					}
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}
 		}
