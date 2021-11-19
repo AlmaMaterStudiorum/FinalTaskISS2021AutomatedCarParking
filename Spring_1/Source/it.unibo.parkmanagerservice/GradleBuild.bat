@@ -1,9 +1,0 @@
-call E:\gradle-7.0\bin\gradle  -b build_ctxclientguiparkin.gradle eclipse
-call E:\gradle-7.0\bin\gradle  -b build_ctxclientguiparkout.gradle eclipse
-call E:\gradle-7.0\bin\gradle  -b build_ctxclientparkin.gradle eclipse	
-call E:\gradle-7.0\bin\gradle  -b build_ctxclientparkout.gradle eclipse
-call E:\gradle-7.0\bin\gradle  -b build_ctxcommand.gradle eclipse
-call E:\gradle-7.0\bin\gradle  -b build_ctxserver.gradle eclipse
-call E:\gradle-7.0\bin\gradle  -b build_ctxservergui.gradle eclipse
-call E:\gradle-7.0\bin\gradle  -b build_ctxsim.gradle eclipse
-call E:\gradle-7.0\bin\gradle  -b build_ctxsimgui.gradle eclipse
