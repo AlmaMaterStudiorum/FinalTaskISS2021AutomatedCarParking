@@ -52,27 +52,27 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Spring_1/Source/unibolibs/uniboInterfaces.jar">
+	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Sprint_1.1/Source/unibolibs/uniboInterfaces.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Spring_1/Source/unibolibs/2p301.jar">
+	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Sprint_1.1/Source/unibolibs/2p301.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Spring_1/Source/unibolibs/it.unibo.qakactor-2.4.jar">
+	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Sprint_1.1/Source/unibolibs/it.unibo.qakactor-2.4.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Spring_1/Source/unibolibs/unibonoawtsupports.jar">
+	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Sprint_1.1/Source/unibolibs/unibonoawtsupports.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Spring_1/Source/unibolibs/radarPojo.jar">
+	<classpathentry kind="lib" path="D:/Sviluppo/Unibo/ISS/FinalTaskISS2021AutomatedCarParking/Sprint_1.1/Source/unibolibs/radarPojo.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>

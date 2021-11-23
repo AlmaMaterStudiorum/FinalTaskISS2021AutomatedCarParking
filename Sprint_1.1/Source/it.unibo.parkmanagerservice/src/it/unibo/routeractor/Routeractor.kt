@@ -21,29 +21,6 @@ class Routeractor ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 					action { //it:State
 						println("Enter initState")
 					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
-				}	 
-				state("wait") { //this:State
-					action { //it:State
-						println("Enter wait")
-					}
-					 transition(edgeName="t019",targetState="manage_state",cond=whenRequest("plan"))
-				}	 
-				state("manage_state") { //this:State
-					action { //it:State
-						println("Enter manage_state")
-						
-								   var ROUTE = ""	
-									
-						request("route", "ROUTE" ,"driveractor" )  
-					}
-					 transition(edgeName="t020",targetState="manage_akn_state",cond=whenReply("akn_route"))
-				}	 
-				state("manage_akn_state") { //this:State
-					action { //it:State
-						println("Enter manage_akn_state")
-					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}
 		}

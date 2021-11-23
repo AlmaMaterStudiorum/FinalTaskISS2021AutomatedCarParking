@@ -21,52 +21,6 @@ class Simactor ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 					action { //it:State
 						println("Enter initState")
 					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
-				}	 
-				state("wait") { //this:State
-					action { //it:State
-					}
-					 transition(edgeName="t023",targetState="manage_start",cond=whenDispatch("start"))
-					transition(edgeName="t024",targetState="manage_stop",cond=whenDispatch("stop"))
-					transition(edgeName="t025",targetState="manage_simaction",cond=whenDispatch("simaction"))
-					transition(edgeName="t026",targetState="dmove_state",cond=whenRequest("dmove"))
-				}	 
-				state("manage_start") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("start(DEVICE)"), Term.createTerm("start(DEVICE)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								forward("start", "DEVICE" ,"statusactor" ) 
-						}
-					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
-				}	 
-				state("manage_stop") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("stop(DEVICE)"), Term.createTerm("stop(DEVICE)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								forward("stop", "DEVICE" ,"statusactor" ) 
-						}
-					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
-				}	 
-				state("manage_simaction") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("simready(PDO,SDO,TDO)"), Term.createTerm("simready(PDO,SDO,TPO)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								forward("simready", "simready(PDO,SDO,TPO)" ,"statusactor" ) 
-						}
-					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
-				}	 
-				state("dmove_state") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("dmove(PDO)"), Term.createTerm("dmove(PDO)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								forward("move", "PDO" ,"statusactor" ) 
-								answer("dmove", "akn_dmove", "X"   )  
-						}
-					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}
 		}
