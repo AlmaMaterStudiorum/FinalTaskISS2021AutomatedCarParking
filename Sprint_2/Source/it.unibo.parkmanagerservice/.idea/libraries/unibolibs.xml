@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="unibolibs">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../unibolibs" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../unibolibs" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../unibolibs" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../unibolibs" recursive="false" type="SOURCES" />
+  </library>
+</component>
