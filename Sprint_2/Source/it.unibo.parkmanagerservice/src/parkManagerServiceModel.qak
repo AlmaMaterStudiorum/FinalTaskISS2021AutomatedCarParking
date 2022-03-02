@@ -1,0 +1,301 @@
+System parkmanagerservice
+
+
+Request  carrequest : carrequest(X)
+Reply    informin    : informin(SLOTNUM)
+
+Request  parkrequest : parkrequest(X)
+Reply    receipt   : receipt(TOKENID)
+
+Dispatch tasks : tasks(TASKONE,TASKTWO,SLOTNUM)
+Dispatch moveToHome : moveToHome(X)
+Dispatch backToHome : backToHome(SLOTNUM)
+Dispatch avaliable : avaliable(X)
+
+Dispatch stoptrolley : stoptrolley(X)
+Dispatch resumetrolley : resumetrolley(X)
+
+/* basic robot */
+Request step       : step( TIME )	
+Reply   stepdone   : stepdone(V)  
+Reply   stepfail   : stepfail(DURATION, CAUSE)
+
+/*BEGIN MOCK SECTION  */
+Context ctxclientparkinmock ip[host="localhost" port=10101]
+
+
+
+
+/*END MOCK SECTION */
+
+
+
+Context ctxparkmanagerservice ip[host="localhost" port=10000]
+
+Context ctxtrolley ip[host="localhost" port=10200]
+
+Context ctxbasicrobot ip [host="localhost" port=8020]  
+
+
+
+/*BEGIN MOCK SECTION  */
+
+/*END MOCK SECTION */
+
+
+/* BEGIN MOCK SECTION */
+  QActor clientparkinmock context ctxclientparkinmock {
+	[#  
+		val ACTORNAME = "clientparkinmock"
+		var SLOTNUM = 0 
+		var TOKENID = ""
+		
+	#]
+	//-------------------------------------------------------------------------
+	State initstate initial {
+		println("$ACTORNAME : Enter initstate")
+
+	}
+	Goto sendcarrequest
+	//-------------------------------------------------------------------------
+		
+	//-------------------------------------------------------------------------
+	State sendcarrequest {
+		println("$ACTORNAME : Enter sendcarrequest")
+		request parkmanagerservice -m carrequest : carrequest(X)
+	}
+	Transition t0
+	    // Request from ClientGUI 
+		whenReply informin -> sendparkrequeststate
+	//-------------------------------------------------------------------------
+		
+	//-------------------------------------------------------------------------
+	State sendparkrequeststate {
+		println("$ACTORNAME : Enter parkrequeststate")
+		onMsg(informin : informin(SLOTNUM))
+		{   
+			[# SLOTNUM = payloadArg(0).toInt() #]	
+			println("$ACTORNAME : SLOTNUM = $SLOTNUM ")		
+		}
+		request parkmanagerservice -m parkrequest : parkrequest(X)
+	}
+	Transition t0
+		whenReply receipt ->  endstate
+	//-------------------------------------------------------------------------
+		
+	//-------------------------------------------------------------------------
+	State endstate {
+		println("Enter watiforcarenter_ext_state")
+		onMsg(receipt : receipt(TOKENID))
+		{   
+			[# TOKENID = payloadArg(0).toString() #]			
+		}
+		println("$ACTORNAME : TOKENID = $TOKENID ")	
+	}	
+	
+}
+  
+ /* END MOCK SECTION */
+
+
+QActor parkmanagerservice context ctxparkmanagerservice
+{
+	
+	[#
+		val ACTORNAME = "parkmanagerservice"
+		var CARREQUESTSLOT = 0
+		var SlotFreeList = mutableListOf("zero","free", "free", "free", "free", "free", "free")
+		var IndoorArea = "OFF"
+		var SequenceNumber = 0
+		val ParkInQueue: java.util.Queue<String> = java.util.LinkedList<String>()
+        val ParkOutQueue: java.util.Queue<String> = java.util.LinkedList<String>() 
+        var Fan = "OFF"
+        var Alarm = "OFF"
+        var Trolley = "idle" // idle,working,stopped		
+	#]
+	
+	State initState initial {
+		println("Enter initState")
+
+	}
+	Goto wait
+	
+	State wait
+	{
+		println("$ACTORNAME : Enter wait")	
+	}
+	Transition t0
+		whenRequest carrequest -> handle_carrequest_state
+		whenRequest parkrequest -> handle_parkrequest_state
+		/* 
+		whenRequest pickup_int -> pickup_int_state
+		whenMsg start -> start_state
+		whenMsg stop -> stop_state
+		whenMsg simready -> simready_state
+		whenMsg move -> move_state
+		whenReply akn_ready -> manage_akn_ready_state
+		* */
+		
+		
+		
+	State handle_carrequest_state
+	{
+		println("$ACTORNAME : Enter handle_carrequest_state")
+		[#
+			CARREQUESTSLOT = 0
+			if (IndoorArea === "OFF")
+			    // if no slot are free SLOTNUM = -1
+			    // SLOTNUM = 0 is impossibile
+ 				CARREQUESTSLOT =  SlotFreeList.indexOfFirst{ it == "free"}
+			else
+				CARREQUESTSLOT = -2
+		#]
+		replyTo carrequest with informin:$CARREQUESTSLOT
+	}
+	Goto wait
+	
+	State handle_parkrequest_state
+	{
+		println("$ACTORNAME : Enter handle_carrequest_state")		
+		[#
+			SequenceNumber++
+			var TOKENID = "$SequenceNumber-$CARREQUESTSLOT"
+			SlotFreeList[CARREQUESTSLOT] = "movingIn"
+			ParkInQueue.add(TOKENID)	
+			
+			// indoor area mock-object		
+			IndoorArea = "ON"
+			
+			// Send Tasks To Trolley
+			//[moveToIn,MoveToSlotIn,CARREQUESTSLOT]
+		#]
+
+		replyTo parkrequest with receipt:$CARREQUESTSLOT
+	}
+	Goto wait
+}
+
+QActor trolley context ctxtrolley
+{
+	[#
+		var TASKONE = ""
+		var TASKTWO = ""
+		var SLOTNUM = 0
+		var LASTSTATE = ""
+		var REQUIREMENTSTATE = "idle" // idle,working,stopped
+		val taskended = false
+		
+	#]
+	State initState initial {
+		println("Enter initState")
+
+	}
+	Goto wait
+	
+	
+	State wait
+	{
+		[# REQUIREMENTSTATE ="idle"  #]
+	}
+	Transition t0
+		whenMsg tasks -> working
+		//whenMsg moveToHome -> workingmovetohome
+		//whenMsg backToHome -> workingbacktohome
+	
+	State working
+	{
+		[# REQUIREMENTSTATE ="working"  #]
+		onMsg(tasks : tasks(TASKONE,TASKTWO,SLOTNUM))
+		{   
+			[# 
+				TASKONE = payloadArg(0).toString() 
+				TASKTWO = payloadArg(1).toString() 
+				SLOTNUM = payloadArg(2).toInt() 
+				
+				// Ottieni da planner tutte le sequenze doPlan() per taskone -> taskoneList
+				// Ottieni da planner tutte le sequenze doPlan() per tasktwo -> tasktwoList
+				
+			#]				
+		}		
+		// 
+	}
+	Goto workingtaskone 
+	
+	State workingtaskone
+	{
+		[# 
+			// Esegui una azione alla volta
+			// se non ci sono altre azioni allora taskended = true
+			 
+		#]			
+	}
+	Goto waitworkingtaskone if [# taskended == false #] else workingtasktwo
+
+		
+	State waitworkingtaskone
+	{
+		
+	}
+	Transition t0
+		whenMsg stoptrolley -> stoppedwaitworkingtaskone
+		whenReply stepdone -> workingtaskone
+		
+	State stoppedwaitworkingtaskone
+	{
+		[# REQUIREMENTSTATE ="working"  #]
+	}
+	Transition t0
+		whenMsg resumetrolley -> waitworkingtaskone
+		whenReply stepdone -> stoppedandstepdonewaitworkingtaskone
+		
+	State stoppedandstepdonewaitworkingtaskone
+	{
+		
+	}
+	Transition t0
+		whenMsg resumetrolley -> workingtaskone
+	
+	State workingtasktwo
+	{
+		[# 
+			// Esegui una azione alla volta
+			// var taskended = false
+		#]		
+	}
+	Goto waitworkingtasktwo if [# taskended == false #] else endtasktwo
+		
+	State waitworkingtasktwo
+	{
+		
+	}
+	Transition t0
+		whenMsg stoptrolley -> stoppedwaitworkingtasktwo
+		whenReply stepdone -> workingtaskone
+		
+	State stoppedwaitworkingtasktwo
+	{
+		[# REQUIREMENTSTATE ="working"  #]
+	}
+	Transition t0
+		whenMsg resumetrolley -> waitworkingtaskone
+		whenReply stepdone -> stoppedandstepdonewaitworkingtasktwo
+		
+	State stoppedandstepdonewaitworkingtasktwo
+	{
+		
+	}
+	Transition t0
+		whenMsg resumetrolley -> workingtasktwo
+	
+	State endtasktwo
+	{
+		// dispatch end of tasks to PMS
+	}
+	Goto wait
+
+	
+	
+	
+	
+}
+	

@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="it.unibo.parkmanagerservice:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/it_unibo_parkmanagerservice_jar</output-path>
+    <root id="archive" name="it.unibo.parkmanagerservice.jar" />
+  </artifact>
+</component>
